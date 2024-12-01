@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Text Share</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <h1>Wi-Fi Text Share</h1>
+    <form id="messageForm">
+        <textarea id="messageText" rows="4" placeholder="Type your message here..."></textarea><br>
+        <button type="submit">Send Message</button>
+    </form>
+    <ul id="messages"></ul>
+
+    <!-- Toast Container for displaying messages -->
+    <div id="toast" class="toast">Message deleted successfully!</div>
+
+    <script>
+        // Fetch and display messages every 2 seconds
+        function fetchMessages() {
+            fetch('/get_messages')
+                .then(response => response.json())
+                .then(data => {
+                    const messagesContainer = document.getElementById('messages');
+                    messagesContainer.innerHTML = '';  // Clear previous messages
+                    data.messages.forEach((msg, index) => {
+                        const li = document.createElement('li');
+                        li.classList.add('message');
+                        li.innerHTML = `
+                            ${msg} 
+                            <button class="delete-icon" onclick="deleteMessage(${index})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        `;
+                        messagesContainer.appendChild(li);
+                    });
+                });
+        }
+
+        // Call fetchMessages initially
+        fetchMessages();
+        // Update messages every 2 seconds
+        setInterval(fetchMessages, 2000);
+
+        // Handle form submission
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const messageText = document.getElementById('messageText').value;
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'message=' + encodeURIComponent(messageText)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('messageText').value = '';  // Clear the input
+                fetchMessages();  // Refresh the message list
+            });
+        });
+
+        // Delete message
+        function deleteMessage(index) {
+            fetch('/delete_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'index=' + encodeURIComponent(index)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === 'success') {
+                    fetchMessages();  // Refresh the message list after deleting
+                    showToast("Message deleted successfully!");  // Show toast
+                } else {
+                    alert('Error deleting message: ' + data.message);
+                }
+            });
+        }
+
+        // Show Toast Message
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerHTML = message;  // Set the toast message text
+            toast.classList.add("show"); // Show the toast
+            setTimeout(function() {
+                toast.classList.remove("show"); // Hide the toast after 3 seconds
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

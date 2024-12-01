@@ -1,0 +1,331 @@
+/* Updated styles.css */
+
+
+
+#mainContent {
+    height: 100vh; /* Take up full viewport height */
+    overflow-y: auto; /* Allow scrolling within the main content */
+}
+
+
+#mainContent::-webkit-scrollbar {
+    display: none;  /* Hide scrollbars for Webkit browsers (Chrome, Safari, etc.) */
+}
+body {
+    font-family: Arial, sans-serif;
+    background-color: #FFF6E9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    text-align: center;
+}
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent body scroll */
+}
+
+body.modal-active {
+    overflow: hidden; /* Prevent scrolling when modal is active */
+}
+
+
+html {
+    overflow: -moz-scrollbars-none;
+    -ms-overflow-style: none; /* Hide scrollbars for IE and Edge */
+}
+
+
+
+
+
+h1 {
+    color: #4335A7;
+    margin-bottom: 20px;
+}
+
+#messageForm {
+    margin-bottom: 20px;
+}
+
+#messageText {
+    width: 649px;
+    height: 90px;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #4335A7;
+    border-radius: 5px;
+    background-color: #FFF6E9;
+    color: #333;
+    resize: none; /* Optional: Prevents resizing of the textarea */
+}
+
+#messageText:focus {
+    outline: none;
+    border-color: #80C4E9;
+}
+
+button {
+    background-color: #FF7F3E;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #4335A7;
+}
+
+#messages {
+    width: 80%;
+    margin-top: 20px;
+    padding: 0;
+    list-style-type: none;
+    text-align: left;
+	
+}
+
+.message {
+    background-color: #80C4E9;
+    color: #4335A7;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    flex-wrap: wrap; /* Allows the text to wrap to the next line if it's too long */
+    word-wrap: break-word; /* Ensure long words break and don't overflow */
+    max-width: 649px; /* Optional: Adjust the maximum width if necessary */
+    width: 100%; /* Allow the container to adjust based on parent */
+}
+
+.message .delete-icon {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #FF7F3E;
+    width: 40px; /* Fixed width for the icon */
+    height: 40px; /* Fixed height for the icon */
+    display: flex; /* Center the icon */
+    justify-content: center;
+    align-items: center;
+    margin-left: auto; /* Push to the far right */
+    border-radius: 50%; /* Optional: For a circular button feel */
+    padding: 0; /* Remove padding to prevent oversized hover area */
+}
+
+.message .delete-icon:hover {
+    color: #4335A7;
+    background-color: rgba(255, 127, 62, 0.2); /* Optional: Add a subtle hover effect */
+}
+
+/* Toast notification styles */
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px; /* Center the toast */
+    background-color: #4335A7;
+    color: #FFF6E9;
+    text-align: center;
+    border-radius: 5px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.toast.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* username and sign out button display */
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    position: absolute;
+    top: 25px; /* Increased spacing for mobile */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.user-name {
+    font-size: 18px;
+    color: #4335A7;
+    margin-right: 10px; /* Add space to avoid overlapping */
+}
+
+/* Shutdown Icon in Place of Sign Out Button */
+.sign-out-btn {
+    background-color: transparent;
+    color: #FF7F3E;
+    font-size: 16px;
+    border: none; /* Remove border */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.sign-out-btn::before {
+    content: "\1F4A4"; /* Unicode for power icon (shutdown symbol) */
+    font-size: 20px;
+    color: #FF7F3E;
+}
+
+.sign-out-btn:hover::before {
+    color: #4335A7;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #888; /* Light gray color for the timestamp */
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+
+.modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(100, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 1000; /* Ensure the modal is on top of other elements */
+    display: flex;
+    justify-content: center; /* For content centering */
+    align-items: center; /* For content centering */
+	overflow: hidden; /* Prevent scrollbars */
+}
+
+.modal-content {
+   top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for modal's own dimensions */
+    background-color: #FFF6E9;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px;
+    max-width: 90%; /* Ensure responsiveness on small screens */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for better visibility */
+    position: relative;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #4335A7;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box; /* Ensure consistent padding and width */
+}
+
+button {
+    background-color: #FF7F3E;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: #4335A7;
+}
+
+/* Ensure responsiveness for small screens */
+@media (max-width: 600px) {
+
+    body {
+        padding-top: 30px; /* Adjusted top padding for better spacing */
+    }
+
+    #messageText {
+        width: 90%;
+        height: 70px; /* Adjust the height to match mobile screen size better */
+        font-size: 14px; /* Slightly smaller font size */
+        padding: 8px; /* Reduce padding for smaller devices */
+    }
+
+    button {
+        width: 100%;
+    }
+
+    #messages {
+        width: 100%;
+    }
+
+    .message .delete-icon {
+        right: 10px; /* Adjust padding for small screens */
+    }
+
+    .header {
+        align-items: center;
+        padding: 15px;
+        font-size: 18px;
+		
+    }
+
+    .modal-content {
+        width: 80%; /* Adjust modal width to take up most of the screen */
+        padding: 20px; /* Reduce padding for smaller screens */
+    }
+
+    /* Ensure the modal title (h2) is visible on smaller screens */
+    .modal h2 {
+        font-size: 18px; /* Reduce font size of title for small screens */
+        margin-bottom: 15px; /* Ensure space between title and input */
+    }
+
+    input[type="text"] {
+        font-size: 14px; /* Adjust input text size for mobile */
+        padding: 8px; /* Reduce padding inside the input field */
+    }
+
+    button {
+        font-size: 14px; /* Adjust button text size for mobile */
+        padding: 8px 16px; /* Reduce padding for the button */
+    }
+
+    .message {
+        padding: 12px; /* Reduce padding to make it look less crowded on smaller screens */
+        font-size: 14px; /* Adjust font size for better readability */
+        max-width: 90%; /* Make the message width take up 90% of the screen width */
+        margin: 10px auto; /* Center the message container */
+    }
+
+    .message .delete-icon {
+        font-size: 18px; /* Make the delete icon slightly smaller */
+        right: 5px; /* Reduce the space from the right side for mobile screens */
+    }
+
+    .message .delete-icon {
+        font-size: 18px;
+    }
+}

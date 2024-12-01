@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wi-Fi Text Share</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Name Prompt Modal -->
+    <div id="namePrompt" class="modal">
+        <div class="modal-content">
+            <h2>Enter your name</h2>
+            <input type="text" id="userName" placeholder="Enter your name" />
+            <button onclick="setUserName()">Submit</button>
+        </div>
+    </div>
+
+    <!-- Main content of the page -->
+    <div id="mainContent" style="display: none;">
+        <div class="header">
+            <span id="userNameDisplay" class="user-name"></span>
+            <button id="signOutButton" class="sign-out-btn" onclick="signOut()">Sign Out</button>
+        </div>
+
+        <h1>Wi-Fi Text Share</h1>
+        <form id="messageForm">
+            <textarea id="messageText" rows="4" placeholder="Type your message here..."></textarea><br>
+            <button type="submit">Send Message</button>
+        </form>
+        <ul id="messages"></ul>
+
+        <!-- Toast notification -->
+        <div id="toast" class="toast">Message deleted successfully!</div>
+    </div>
+
+    <script>
+        // Check if the user has already entered a name
+        function checkUserName() {
+            const userName = localStorage.getItem("userName");
+            if (userName) {
+                // If name exists in localStorage, show the main content
+                showMainContent(userName);
+            } else {
+                // Otherwise, show the name prompt
+                document.getElementById("namePrompt").style.display = "block";
+            }
+        }
+
+        // Set the user's name and hide the prompt
+        function setUserName() {
+            const userName = document.getElementById("userName").value.trim();
+            if (userName) {
+                localStorage.setItem("userName", userName);
+                showMainContent(userName);
+            } else {
+                alert("Please enter a valid name.");
+            }
+        }
+
+        // Show main content after user enters their name
+        function showMainContent(userName) {
+            document.getElementById("namePrompt").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+            document.getElementById("userNameDisplay").innerText = userName;  // Display the user's name at top right
+            fetchMessages(userName); // Load messages for this user
+        }
+
+        // Fetch and display messages for the current user
+        function fetchMessages(userName) {
+            fetch('/get_messages?user=' + encodeURIComponent(userName))
+                .then(response => response.json())
+                .then(data => {
+                    const messagesContainer = document.getElementById('messages');
+                    messagesContainer.innerHTML = '';  // Clear previous messages
+                    data.messages.forEach((msg, index) => {
+                        const li = document.createElement('li');
+                        li.classList.add('message');
+                        li.innerHTML = `
+                            ${msg} 
+                            <button class="delete-icon" onclick="deleteMessage(${index}, '${userName}')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        `;
+                        messagesContainer.appendChild(li);
+                    });
+                });
+        }
+
+        // Handle form submission
+        document.getElementById('messageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const messageText = document.getElementById('messageText').value;
+            const userName = localStorage.getItem("userName");
+            fetch('/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `message=${encodeURIComponent(messageText)}&user=${encodeURIComponent(userName)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('messageText').value = '';  // Clear the input
+                fetchMessages(userName);  // Refresh the message list
+            });
+        });
+
+        // Delete message for a particular user
+        function deleteMessage(index, userName) {
+            fetch('/delete_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `index=${encodeURIComponent(index)}&user=${encodeURIComponent(userName)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === 'success') {
+                    fetchMessages(userName);  // Refresh the message list after deleting
+                    showToast("Message deleted successfully!");  // Show toast
+                } else {
+                    alert('Error deleting message: ' + data.message);
+                }
+            });
+        }
+
+        // Show Toast Message
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerHTML = message;  // Set the toast message text
+            toast.classList.add("show"); // Show the toast
+            setTimeout(function() {
+                toast.classList.remove("show"); // Hide the toast after 3 seconds
+            }, 3000);
+        }
+
+        // Sign out the user
+        function signOut() {
+            localStorage.removeItem("userName");  // Clear the user name from localStorage
+            document.getElementById("mainContent").style.display = "none";  // Hide the main content
+            document.getElementById("namePrompt").style.display = "block";  // Show the name prompt again
+        }
+
+        // Initialize the page
+        checkUserName(); // Check if the name is already stored in localStorage
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+vw_cms_m_casa: 
+dp_cmdm.tbl_cms_m_casa
+=======================================
+vw_cms_account :
+dp_cmdm.tbl_cms_m_casa
+dw_ckm.ut_202405
+dw_ckm.mg_202405
+dw_ckm.pl_202405
+dw_ckm.fd_202405
+dp_tvedw_cmdm.vw_cc_tran_mart
+Balkrishna Shah
+5:10 PM
+=========================================
+event_atm_card:
+dp_tvedw_ebs_event_atm_card
+===========================================
+vw_cms_cif :
+dw_ckm.cif_daily cif
+dm_ccard.dslab_ai_mart aimart
+dm_ccard.va_mart
+dp_tvedw_cmdm.vw_dgm_cust_attribute_g_mstr
+dm_ccard.rpa_marketable_base
+dw_ckm.ebanking_latest
+dp_tvedw_cmdm.vw_connect_trans ev
+dp_tvedw_cmdm.vw_sa_fd_segment_mthly_mstr
+===============================================
+vw_custacc_final:
+dp_tvedw_cmdm.vw_cms_cif
+dp_tvedw_cmdm.vw_cms_account
+
+===================================
+vw_seg_validacctone_mthly_mstr:
+dp_cmdm.seg_validacctone_mthly_mstr
+
+============================================
+vw_sa_fd_segment_mthly_mstr:
+dp_cmdm.sa_fd_segment_mthly_mstr
