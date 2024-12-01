@@ -20,7 +20,7 @@ This is a simple Flask web application that allows users to send, view, and dele
 
 1. Clone the repository to your local machine:
    ```sh
-   git clone https://github.com/your-username/your-repository-name.git
+   git clone https://github.com/Balkrishnashah/easy-share.git
    ```
 
 2. Navigate to your project directory:
